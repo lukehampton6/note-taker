@@ -6,8 +6,12 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3001
 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static('public'));
+
 app.get('/api/notes', (req, res) => {
-    fs.readFile('/db/db.json', (err, data) => {
+    fs.readFile('./db/db.json', (err, data) => {
         if (err) {
             console.error(err);
             return
@@ -22,7 +26,18 @@ app.post('/api/notes', (req, res) => {
         text: req.body.text,
         id: v1()
     };
-    fs.appendFile('/db/db.json', newObject, (err) => {
+    // use fs.readfile to get db.json data
+    fs.readFile('./db/db.json', (err, data) => {
+        if (err) {
+            console.error(err);
+            return
+        }
+          
+    })
+    // json parse it so its an array
+    // put new object into old one
+    // stringify then fs.write file
+    fs.appendFile('./db/db.json', JSON.stringify({newObject}), (err) => {
         if (err) {
             console.error(err);
             return
@@ -32,7 +47,7 @@ app.post('/api/notes', (req, res) => {
 });
 
 app.delete('/api/notes/:id', (req, res) => {
-    fs.readFile('/db/db.json', (err, data) => {
+    fs.readFile('./db/db.json', (err, data) => {
         if (err) {
             console.error(err)
             return
@@ -40,7 +55,7 @@ app.delete('/api/notes/:id', (req, res) => {
         let filteredNotes = data.filter(function(notes) {
             return notes.id !== req.params.id;
         })
-        fs.writeFile('/db/db.json', filteredNotes, (err) => {
+        fs.writeFile('./db/db.json', filteredNotes, (err) => {
             if (err) {
                 console.error(err)
                 return
