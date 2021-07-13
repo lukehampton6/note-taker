@@ -21,32 +21,30 @@ app.get("/api/notes", (req, res) => {
 });
 
 app.post("/api/notes", (req, res) => {
-  let newObject = {
-    title: req.body.title,
-    text: req.body.text,
-    id: v1(),
-  };
   // use fs.readfile to get db.json data
   fs.readFile("./db/db.json", (err, data) => {
     if (err) {
       console.error(err);
       return;
     }
-    const dataArray = data
-    JSON.parse(dataArray);
-    dataArray.push(newObject);
-    
+    const dataArray = JSON.parse(data);
   });
+
+  let newObject = {
+    title: req.body.title,
+    text: req.body.text,
+    id: v1(),
+  };
+  dataArray.push(newObject);
   // json parse it so its an array
   // put new object into old one
   // stringify then fs.write file
-  fs.writeFile("./db/db.json", JSON.stringify({dataArray}), (err) => {
+  fs.writeFile("./db/db.json", JSON.stringify(dataArray), (err) => {
     if (err) {
       console.error(err);
       return;
     }
   });
-  res.json(dataArray);
 });
 
 app.delete("/api/notes/:id", (req, res) => {
