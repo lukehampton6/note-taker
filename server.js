@@ -40,6 +40,7 @@ app.post("/api/notes", (req, res) => {
         console.error(err);
         return;
       }
+      return res.json(parsedNotes);
     });
   });
 });
@@ -59,6 +60,7 @@ app.delete("/api/notes/:id", (req, res) => {
         console.error(err);
         return;
       }
+      return res.json(filteredNotes);
     });
   });
 });
